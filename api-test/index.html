@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <button data-type="button" id="addTime">Add Time</button>
+    <button data-type="button" id="updateTime">Update Time</button>
+    <Button data-type="button" id="removeTime">Remove Time</Button>
+    <script>
+      window.addEventListener('load', () => {
+        const addTime = document.getElementById('addTime');
+        const updateTime = document.getElementById('updateTime');
+        const removeTime = document.getElementById('removeTime');
+  
+        const postFetch = data => {
+          fetch('/', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+        };
+  
+        document.addEventListener('click', e => {
+          const button = e.target.dataset.type;
+          const id = e.target.id;
+  
+          if(!button) return;
+
+          const fireEvents = {
+            addTime: () => postFetch({type: 'ADD', data: {id: 'test', schedule: '*/10 * * * * *'}}),
+            updateTime: () => postFetch({type: 'UPDATE', data: {id: 'test', schedule: '*/30 * * * * *'}}),
+            removeTime: () => postFetch({type: 'REMOVE', data: {id: 'test'}})
+          };
+
+          fireEvents[id]();
+        }, false);
+      });
+    </script>
+  </body>
+</html>
