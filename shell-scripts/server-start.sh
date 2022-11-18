@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pkill node; node server.js
+node ../server.js

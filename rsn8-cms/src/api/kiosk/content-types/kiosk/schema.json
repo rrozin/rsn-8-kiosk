@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "kiosks",
+  "info": {
+    "singularName": "kiosk",
+    "pluralName": "kiosks",
+    "displayName": "Kiosk",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "videos"
+      ]
+    },
+    "url": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "schedules": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::schedule.schedule",
+      "mappedBy": "kiosk"
+    },
+    "delay": {
+      "type": "integer"
+    },
+    "speed": {
+      "type": "integer"
+    },
+    "effect": {
+      "type": "enumeration",
+      "enum": [
+        "fade",
+        "cube",
+        "coverflow",
+        "flip"
+      ]
+    }
+  }
+}

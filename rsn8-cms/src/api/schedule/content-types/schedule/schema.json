@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "schedules",
+  "info": {
+    "singularName": "schedule",
+    "pluralName": "schedules",
+    "displayName": "Schedule On",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "schedule": {
+      "type": "component",
+      "repeatable": false,
+      "component": "crontab.schedule",
+      "required": true
+    },
+    "kiosk": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::kiosk.kiosk",
+      "inversedBy": "schedules"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_crontab_schedules",
+  "info": {
+    "displayName": "Schedule",
+    "icon": "calendar-alt",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "day": {
+      "type": "enumeration",
+      "enum": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "required": true
+    },
+    "hour": {
+      "type": "integer",
+      "required": true,
+      "max": 23,
+      "min": 0,
+      "default": 0
+    },
+    "minute": {
+      "type": "integer",
+      "required": true,
+      "max": 59,
+      "min": 0,
+      "default": 0
+    }
+  }
+}
