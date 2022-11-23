@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const template = `${__dirname}/template.html`;
-const output = '../public/';
+const output = './public/';
 const mediaRoot = '../../rsn8-cms/public/';
 
 const outputPath = path => {
@@ -48,11 +48,16 @@ const deletePage = folderName => {
 const buildSlides = media => {
   const setTemplate = {
     '.jpg': img => imgTemplate(img),
+    '.png': img => imgTemplate(img),
     '.mp4': vid => videoTemplate(vid)
   };
 
-  let markup = ''
-  media.forEach(item => markup += setTemplate[item.attributes.ext](item.attributes.url));
+
+  let markup = '';
+
+  media.forEach(item => {
+    markup += setTemplate[item.attributes.ext](item.attributes.url)
+  });
 
   return markup;
 };
@@ -69,11 +74,11 @@ function clearAllPages(path) {
 
 const modifyPage = async () => {
   const pageTemplate = fs.readFileSync(template, 'utf8');
-  const path = 'http://0.0.0.0:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[schedules][fields][0]=slug';
+  const path = 'http://0.0.0.0:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug';
   const content = await fetchAPI(path);
-  
+
   if(!content) return;
-  
+
   // clear out existing folder
   clearAllPages(output);
 
@@ -96,12 +101,13 @@ const modifyPage = async () => {
 
     app.dataset.swiper = JSON.stringify(params);
     app.innerHTML += buildSlides(attr.media.data);
-    
+
     // //build new folder(s) and create new files
     createFolder(outputPath(attr.url));
     fs.writeFileSync(`${outputPath(attr.url)}/index.html`, dom.serialize(), 'UTF-8');
 
-    eventEmitter.emit('route', attr.url);
+    console.log(attr.url);
+    //eventEmitter.emit('route', attr.url);
   });
 };
 

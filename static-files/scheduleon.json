@@ -1,0 +1,1 @@
+{"data":[{"id":3,"attributes":{"url":"res-students","schedule":{"id":8,"day":"Tuesday","hour":18,"minute":22}}},{"id":2,"attributes":{"url":"services","schedule":{"id":9,"day":"Tuesday","hour":18,"minute":23}}},{"id":43,"attributes":{"url":"test","schedule":{"id":27,"day":"Monday","hour":1,"minute":1}}}],"meta":{"pagination":{"page":1,"pageSize":25,"pageCount":1,"total":3}}}
