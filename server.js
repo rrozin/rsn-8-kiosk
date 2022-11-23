@@ -9,6 +9,7 @@ import { createPage, modifyPage, deletePage } from './build-page/build-page.js';
 import { updateScheduleJSON } from './server-files/update-schedule.js';
 import { cronSchedule, eventEmitter } from './server-files/utils.js';
 import { updateCurrentPage, getCurrentPage } from './server-files/current-page.js';
+import shell from 'shelljs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,9 +35,8 @@ io.on('connection', function(socket) {
 });
 
 const scheduleOn = (event, entry, model) => {
-  const kiosk = entry.kiosk;
   const schedule = entry.schedule;
-  const name = entry.slug;
+  const path = entry.url;
   const actions = {
     'entry.create': setSchedule,
     'entry.update': setSchedule,
@@ -44,18 +44,16 @@ const scheduleOn = (event, entry, model) => {
   };
 
   if(event === 'entry.delete') {
-    console.log('deleting...')
-    actions['entry.delete']({title: name});
+    actions['entry.delete']({url: path});
     return;
   }
-  
-  if(!kiosk) return;
-  updateScheduleJSON('schedules');
-  
-  const path = kiosk.url;
+
+  // if(!kiosk) return;
+  updateScheduleJSON('scheduleon');
+
   const cron = cronSchedule(schedule.minute, schedule.hour, schedule.day);
-  
-  actions[event]({title: name, schedule: cron, url: path, action: model});
+
+  actions[event]({title: path, schedule: cron, url: path, action: model});
 };
 
 const scheduleOff = (event, entry, model) => {
@@ -76,6 +74,7 @@ const scheduleOff = (event, entry, model) => {
 
 const kioskTasks = (event, entry) => {
   const name = entry.url;
+  const schedule = entry.schedule;
   const actionTypes = {
     'entry.create': () => modifyPage(),
     'entry.update': () => modifyPage(),
@@ -84,14 +83,20 @@ const kioskTasks = (event, entry) => {
         updateCurrentPage('');
         ws.send('./');
       }
-      if(entry.schedules.length) {
-        entry.schedules.forEach(item => removeSchedule({title: item.slug}));
-      }
+
       deletePage(name)
     },
   };
 
   actionTypes[event]();
+
+  // set schedule
+  if(schedule.min === null || schedule.day === null || schedule.hour === null) {
+    removeSchedule({url: name})
+    return;
+  }
+  console.log('has schedule', entry.schedule)
+  scheduleOn(event, entry, 'schedule');
 };
 
 const modelActions = {
@@ -127,7 +132,8 @@ server.listen(3000, () => {
   console.log('listening on *:3000');
   // refresh browser
 
-  // setTimeout(() => {
+  setTimeout(() => {
   //   startup();
-  // }, 5000);
+    shell.exec('sh ~/kiosk/shell-scripts/refresh-browser.sh');
+  }, 5000);
 });

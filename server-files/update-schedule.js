@@ -8,8 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const paths = {
-  schedules: 'http://0.0.0.0:1337/api/schedules?fields[0]=slug&populate[schedule][fields][0]=*&populate[kiosk][fields][0]=url',
-  scheduleoff: 'http://0.0.0.0:1337/api/schedule-offs?fields[0]=slug&populate[schedule][fields][0]=*&populate[kiosk][fields][0]=url',
+  scheduleon: 'http://0.0.0.0:1337/api/kiosks?fields[0]=url&populate[schedule][fields][1]=*',
+  schedules: 'http://0.0.0.0:1337/api/on-schedules?fields[0]=slug&populate[schedule][fields][0]=*&populate[kiosk][fields][0]=url',
+  scheduleoff: 'http://0.0.0.0:1337/api/off-schedules?fields[0]=slug&populate[schedule][fields][0]=*&populate[kiosk][fields][0]=url',
 };
 
 const updateScheduleJSON = async type => {

@@ -11,7 +11,7 @@ export default defineConfig({
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
               extType = 'img';
             }
-            return `[name][extname]`;
+            return `public/[name][extname]`;
           },
           chunkFileNames: 'scripts.js',
           entryFileNames: 'scripts.js',

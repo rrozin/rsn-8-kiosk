@@ -2,17 +2,18 @@ import './resources/styles/style.scss';
 import Swiper, { Autoplay, Manipulation, EffectFade, EffectFlip, EffectCube, EffectCoverflow }  from 'swiper';
 import 'swiper/css/bundle';
 
-const socket = new WebSocket('ws://localhost:3000/');
+const socket = new WebSocket('ws://resonate:3000/');
 
 const changeURL = url => {
   const path =`http://${location.host}/public/${url}`;
   location.href = path;
 };
 
+console.log('socket');
 socket.addEventListener('message', (event) => {
   console.log('Message from server', event.data);
   changeURL(event.data);
-  
+
   socket.send(Date.now())
 });
 

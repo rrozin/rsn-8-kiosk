@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 const actions = {
   'schedule': data => {
-    console.log('test')
+    console.log('schedule page', data)
     updateCurrentPage(data.url);
     eventEmitter.emit('route', data.url);
   },
@@ -21,24 +21,20 @@ const actions = {
 };
 
 const addSchedule = data => {
-  // tasks.set(data.title, {schedule: new cron.CronJob(data.schedule, () => {
-  //   updateCurrentPage(data.url);
-  //   eventEmitter.emit('route', data.url);
-  // })});
-  console.log('set action', actions[data.action])
-  tasks.set(data.title, {schedule: new cron.CronJob(data.schedule, () => actions[data.action](data))});
-  tasks.get(data.title).schedule.start();
+  console.log('start schedule -- ', data.url);
+  tasks.set(data.url, { schedule: new cron.CronJob(data.schedule, () => actions[data.action](data)) });
+  tasks.get(data.url).schedule.start();
 
-  console.log('adding new schedule', data.url, data.schedule);
+  // console.log('adding new schedule', data.url, data.schedule);
 };
 
 const removeSchedule = data => {
-  tasks.get(data.title).schedule.stop();
-  tasks.delete(data.title);
+  tasks.get(data.url).schedule.stop();
+  tasks.delete(data.url);
 };
 
 const updateSchedule = data => {
-  if(!tasks.has(data.title)) return;
+  if(!tasks.has(data.url)) return;
 
   removeSchedule(data);
   addSchedule(data);
@@ -47,35 +43,33 @@ const updateSchedule = data => {
 };
 
 const setSchedule = data => {
-  const task = tasks.get(data.title);
+  const task = tasks.get(data.url);
 
   if(!task) {
     addSchedule(data);
-    // console.log('SETSCHEDULE: adding new title')
     return;
   }
-    
-  console.log(data);
+
+  // console.log('updating data', data);
   updateSchedule(data);
 };
 
 const startup = () => {
-  const onScheduleData = fs.readFileSync(`${__dirname}/../static-files/schedules.json`, 'utf8');
+  const onScheduleData = fs.readFileSync(`${__dirname}/../static-files/scheduleon.json`, 'utf8');
   const onSchedules = JSON.parse(onScheduleData);
-  const scheduleObj = {};
   const lastPage = getCurrentPage();
 
   if(onSchedules) {
     onSchedules.data.forEach((item) => {
+      const scheduleObj = {};
       const scheduleRoot = item.attributes;
       const scheduleData = scheduleRoot.schedule;
-      const kiosk = scheduleRoot.kiosk.data.attributes;
-  
-      scheduleObj.title = scheduleRoot.slug;
-      // format the schedule
+      const url = scheduleRoot.url;
+
       scheduleObj.schedule = cronSchedule(scheduleData.minute, scheduleData.hour, scheduleData.day);
-      scheduleObj.url = kiosk.url;
-      
+      scheduleObj.url = url;
+      scheduleObj.action = 'schedule';
+
       setSchedule(scheduleObj);
     });
   }
@@ -87,8 +81,8 @@ const startup = () => {
   }
 
   eventEmitter.emit('route', './');
-  
-  console.log('load root page')
+
+  console.log('load root page');
 };
 
 export { setSchedule, removeSchedule, startup };
