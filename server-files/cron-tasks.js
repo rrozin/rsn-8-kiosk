@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { cronSchedule, eventEmitter } from './utils.js';
 import { updateCurrentPage, getCurrentPage } from './current-page.js';
+import shell from 'shelljs';
 
 const tasks = new Map();
 const __filename = fileURLToPath(import.meta.url);
@@ -11,21 +12,26 @@ const __dirname = dirname(__filename);
 
 const actions = {
   'schedule': data => {
-    console.log('schedule page', data)
+    console.log('schedule page ------------', data)
+
+    shell.exec('sh ~/kiosk/shell-scripts/tv-on.sh');
     updateCurrentPage(data.url);
     eventEmitter.emit('route', data.url);
   },
-  'schedule-off': data => {
+  'off-schedule': data => {
     console.log('Turn TV Off!', data);
+    shell.exec('sh ~/kiosk/shell-scripts/tv-off.sh');
   }
 };
 
 const addSchedule = data => {
-  console.log('start schedule -- ', data.url);
+  console.log('start schedule ---------- ', data.action, data.schedule);
   tasks.set(data.url, { schedule: new cron.CronJob(data.schedule, () => actions[data.action](data)) });
   tasks.get(data.url).schedule.start();
 
-  // console.log('adding new schedule', data.url, data.schedule);
+
+  //new cron.CronJob('0 51 1 * * 4', () => console.log('testing'));
+  //console.log('schedule tasks:', tasks);
 };
 
 const removeSchedule = data => {
@@ -56,11 +62,14 @@ const setSchedule = data => {
 
 const startup = () => {
   const onScheduleData = fs.readFileSync(`${__dirname}/../static-files/scheduleon.json`, 'utf8');
-  const onSchedules = JSON.parse(onScheduleData);
+  const offScheduleData = fs.readFileSync(`${__dirname}/../static-files/scheduleoff.json`, 'utf8');
+  const onSchedules = onScheduleData && JSON.parse(onScheduleData) || '';
+  const offSchedules = offScheduleData && JSON.parse(offScheduleData) || '';
   const lastPage = getCurrentPage();
 
-  if(onSchedules) {
-    onSchedules.data.forEach((item) => {
+  if(onSchedules && onSchedules.data && onSchedules.data.length) {
+    //console.log('on schedule data', onSchedules.data)
+    onSchedules.data.forEach(item => {
       const scheduleObj = {};
       const scheduleRoot = item.attributes;
       const scheduleData = scheduleRoot.schedule;
@@ -71,6 +80,21 @@ const startup = () => {
       scheduleObj.action = 'schedule';
 
       setSchedule(scheduleObj);
+    });
+  }
+
+  if(offSchedules && offSchedules.data && offSchedules.data.length) {
+    offSchedules.data.forEach(item => {
+      const scheduleObj = {};
+      const scheduleRoot = item.attributes;
+      const scheduleURL = scheduleRoot.slug;
+      const scheduleData = scheduleRoot.schedule;
+
+      scheduleObj.schedule = cronSchedule(scheduleData.minute, scheduleData.hour, scheduleData.day);
+      scheduleObj.url = scheduleURL;
+      scheduleObj.action = 'off-schedule';
+
+      setSchedule(scheduleObj)
     });
   }
 

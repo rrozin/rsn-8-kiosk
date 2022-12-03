@@ -102,7 +102,7 @@ const kioskTasks = (event, entry) => {
 const modelActions = {
   kiosk: kioskTasks,
   schedule: scheduleOn,
-  'schedule-off': scheduleOff,
+  'off-schedule': scheduleOff,
 };
 
 app.post('/api', function (req, res) {
@@ -131,9 +131,12 @@ eventEmitter.on('route', url => {
 server.listen(3000, () => {
   console.log('listening on *:3000');
   // refresh browser
+  setTimeout(() => {
+    console.log('refreshing');
+    shell.exec('sh ~/kiosk/shell-scripts/refresh-browser.sh');
+  }, 1000);
 
   setTimeout(() => {
-  //   startup();
-    shell.exec('sh ~/kiosk/shell-scripts/refresh-browser.sh');
-  }, 5000);
+    startup();
+  }, 3000);
 });

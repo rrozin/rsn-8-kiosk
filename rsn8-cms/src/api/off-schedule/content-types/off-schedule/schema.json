@@ -1,31 +1,29 @@
 {
   "kind": "collectionType",
-  "collectionName": "on_schedules",
+  "collectionName": "off_schedules",
   "info": {
-    "singularName": "on-schedule",
-    "pluralName": "on-schedules",
-    "displayName": "On Schedule",
-    "description": ""
+    "singularName": "off-schedule",
+    "pluralName": "off-schedules",
+    "displayName": "off-schedule"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
+    "Name": {
       "type": "string",
       "required": true
     },
     "slug": {
       "type": "uid",
-      "targetField": "title",
+      "targetField": "Name",
       "required": true
     },
     "schedule": {
       "type": "component",
       "repeatable": false,
-      "component": "schedule.crontab",
-      "required": true
+      "component": "schedule.crontab"
     }
   }
 }
