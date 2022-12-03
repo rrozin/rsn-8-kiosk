@@ -9,11 +9,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const template = `${__dirname}/template.html`;
-const output = './public/';
+const output = `../public`;
 const mediaRoot = '../../rsn8-cms/public/';
 
-const outputPath = path => {
-  return `${output}${path}`;
+const outputPath = (path = '') => {
+  return `/home/rsn8/kiosk/public/${path}`;
 };
 
 const createFolder = folderName => {
@@ -42,6 +42,7 @@ const videoTemplate = videoSrc => `
 `;
 
 const deletePage = folderName => {
+  //console.log('removing page', outputPath(folderName));
   fs.rmSync(outputPath(folderName), { recursive: true, force: true });
 };
 
@@ -63,10 +64,12 @@ const buildSlides = media => {
 };
 
 function clearAllPages(path) {
+//  console.log('path', path);
   return fs.readdirSync(path).filter(function (file) {
     const isDirectory = fs.statSync(path+'/'+file).isDirectory();
 
     if(isDirectory) {
+      //console.log('file', file);
       deletePage(file);
     }
   });
@@ -74,13 +77,13 @@ function clearAllPages(path) {
 
 const modifyPage = async () => {
   const pageTemplate = fs.readFileSync(template, 'utf8');
-  const path = 'http://0.0.0.0:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug';
+  const path = 'http://resonate:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug';
   const content = await fetchAPI(path);
 
   if(!content) return;
 
   // clear out existing folder
-  clearAllPages(output);
+  clearAllPages(outputPath());
 
   //iterate through data
   content.data.forEach(item => {
