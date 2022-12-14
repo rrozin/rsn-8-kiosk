@@ -1,1 +1,1 @@
-{"data":[{"id":3,"attributes":{"url":"res-students","schedule":{"id":8,"day":"Tuesday","hour":16,"minute":9}}},{"id":2,"attributes":{"url":"services","schedule":{"id":9,"day":"Wednesday","hour":10,"minute":35}}}],"meta":{"pagination":{"page":1,"pageSize":25,"pageCount":1,"total":2}}}
+{"data":[{"id":76,"attributes":{"url":"services","schedule":{"id":1,"day":"Wednesday","hour":12,"minute":12}}},{"id":77,"attributes":{"url":"wednesday","schedule":{"id":2,"day":"Wednesday","hour":12,"minute":1}}}],"meta":{"pagination":{"page":1,"pageSize":25,"pageCount":1,"total":2}}}

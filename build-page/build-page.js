@@ -3,17 +3,21 @@ import jsdom from 'jsdom';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { fetchAPI } from '../server-files/utils.js';
+import os from 'os';
+import { getCurrentPage } from '../server-files/current-page.js';
 import { eventEmitter } from '../server-files/utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const template = `${__dirname}/template.html`;
-const output = `../public`;
-const mediaRoot = '../../rsn8-cms/public/';
+const mediaRoot = '../../rsn8-cms/public/' || '/public';
 
 const outputPath = (path = '') => {
-  return `/home/rsn8/kiosk/public/${path}`;
+  const location = os.hostname();
+  const returnPath = (location === 'resonate') ? `/home/rsn8/kiosk/public/${path}` : `./public/${path}`;
+  // const returnPath = `./public/${path}`;
+  return returnPath;
 };
 
 const createFolder = folderName => {
@@ -77,7 +81,7 @@ function clearAllPages(path) {
 
 const modifyPage = async () => {
   const pageTemplate = fs.readFileSync(template, 'utf8');
-  const path = 'http://resonate:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug';
+  const path = `http://${os.hostname()}:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug`;
   const content = await fetchAPI(path);
 
   if(!content) return;
@@ -109,8 +113,11 @@ const modifyPage = async () => {
     createFolder(outputPath(attr.url));
     fs.writeFileSync(`${outputPath(attr.url)}/index.html`, dom.serialize(), 'UTF-8');
 
-    console.log(attr.url);
-    //eventEmitter.emit('route', attr.url);
+    if(attr.url === getCurrentPage()) {
+      console.log('refresh page!!!!!!')
+      eventEmitter.emit('route', getCurrentPage());
+    }
+    
   });
 };
 
