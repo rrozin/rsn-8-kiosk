@@ -28,10 +28,6 @@ const addSchedule = data => {
   console.log('start schedule ---------- ', data.action, data.schedule);
   tasks.set(data.url, { schedule: new cron.CronJob(data.schedule, () => actions[data.action](data)) });
   tasks.get(data.url).schedule.start();
-
-
-  //new cron.CronJob('0 51 1 * * 4', () => console.log('testing'));
-  //console.log('schedule tasks:', tasks);
 };
 
 const removeSchedule = data => {
@@ -56,7 +52,6 @@ const setSchedule = data => {
     return;
   }
 
-  // console.log('updating data', data);
   updateSchedule(data);
 };
 
@@ -68,7 +63,6 @@ const startup = () => {
   const lastPage = getCurrentPage();
 
   if(onSchedules && onSchedules.data && onSchedules.data.length) {
-    //console.log('on schedule data', onSchedules.data)
     onSchedules.data.forEach(item => {
       const scheduleObj = {};
       const scheduleRoot = item.attributes;
