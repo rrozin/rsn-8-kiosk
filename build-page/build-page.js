@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import jsdom from 'jsdom';
 import { fileURLToPath } from 'url';
@@ -61,7 +62,7 @@ const buildSlides = media => {
   let markup = '';
 
   media.forEach(item => {
-    markup += setTemplate[item.attributes.ext](item.attributes.url)
+    markup += setTemplate[item.attributes.ext.toLowerCase()](item.attributes.url)
   });
 
   return markup;
@@ -82,6 +83,7 @@ function clearAllPages(path) {
 const modifyPage = async () => {
   const pageTemplate = fs.readFileSync(template, 'utf8');
   const path = `http://${os.hostname()}:1337/api/kiosks?fields[0]=url&fields[1]=delay&fields[2]=speed&fields[3]=effect&populate[media][fields][0]=url&populate[media][fields][1]=ext&populate[on-schedules][fields][0]=slug`;
+
   const content = await fetchAPI(path);
 
   if(!content) return;
@@ -117,7 +119,7 @@ const modifyPage = async () => {
       console.log('refresh page!!!!!!')
       eventEmitter.emit('route', getCurrentPage());
     }
-    
+
   });
 };
 

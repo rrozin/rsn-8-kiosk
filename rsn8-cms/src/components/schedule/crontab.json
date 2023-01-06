@@ -2,7 +2,8 @@
   "collectionName": "components_schedule_crontabs",
   "info": {
     "displayName": "Crontab",
-    "icon": "calendar-alt"
+    "icon": "calendar-alt",
+    "description": ""
   },
   "options": {},
   "attributes": {
@@ -21,11 +22,14 @@
     },
     "hour": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "max": 24
     },
     "minute": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "max": 59,
+      "default": 59
     }
   }
 }

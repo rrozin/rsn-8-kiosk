@@ -111,6 +111,11 @@ app.post('/api', function (req, res) {
   const model = body.model;
   const event = body.event;
 
+  if(!entry.schedule) {
+    console.log('NO SCHEDULE DO NOTHING! -----------', entry.schedule)
+    return;
+  }
+
   modelActions[model](event, entry, model);
 
   res.sendStatus(200);

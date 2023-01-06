@@ -2,7 +2,7 @@ import './resources/styles/style.scss';
 import Swiper, { Autoplay, Manipulation, EffectFade, EffectFlip, EffectCube, EffectCoverflow }  from 'swiper';
 import 'swiper/css/bundle';
 
-const socket = new WebSocket(`ws://${location.hostname.split('.')[0]}:3000/`);
+const socket = new WebSocket(`ws://${location.hostname}:3000/`);
 
 const changeURL = url => {
   const path =`http://${location.host}/public/${url}`;
